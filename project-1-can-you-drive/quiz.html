@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project 1 Quiz</title>
+  <link rel="stylesheet" href="https://unpkg.com/normalize.css/normalize.css">
+  <style type="text/css">
+    body {
+      font-family: monospace;
+      padding: 20px;
+      font-size: 2em;
+    }
+    .quiz {
+      display: block;
+    }
+    .end-of-quiz {
+      display: none;
+    }
+  </style>
+  <script src="https://unpkg.com/vue@3.4.0"></script>
+</head>
+
+<body>
+  <div id="app">
+    <div :class="{quiz: endOfQuiz === 'No', 'end-of-quiz': endOfQuiz === 'Yes'}">
+        {{message[questionIndex]}}
+    </div>
+    <div :class="{quiz: endOfQuiz === 'No', 'end-of-quiz': endOfQuiz === 'Yes'}">
+        {{question[questionIndex]}}
+    </div>
+    <div :class="{quiz: endOfQuiz === 'Yes', 'end-of-quiz': endOfQuiz === 'No'}">
+        Result: {{score}}
+    </div>
+    <div :class="{quiz: endOfQuiz === 'No', 'end-of-quiz': endOfQuiz === 'Yes'}">
+      <input type="number" v-model="answer[questionIndex]" />
+    </div>
+  </div>
+  <script>
+    const { createApp, ref, computed } = Vue;
+    const App = {
+      setup() {
+        let questionIndex = ref(0);
+        let message = ref(['First question', 'Second question', 'Third question']);
+        let question = ref(['How much is 2+2?', 'How much is 3*5+1?', 'What is 3/1?']);
+        let answer = ref([null, null, null]);
+        let endOfQuiz = computed(() => {
+          return questionIndex.value >= 3 ? 'Yes' : 'No';
+        });
+
+        window.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' && questionIndex.value < 3) {
+            questionIndex.value++;
+          }
+        });
+
+        let score = computed(() => {
+            let total = 0;
+            if (answer.value[0] === 4) {
+                total++;
+            }
+            if (answer.value[1] === 16) {
+                total++;
+            }
+            if (answer.value[2] === 3) {
+                total++;
+            }
+          return total;
+        });
+
+        return {
+          message, question, answer, questionIndex, endOfQuiz, score
+        }
+      },
+    }; 
+
+    createApp(App).mount('#app');
+  </script>
+</body>
+
+</html>
